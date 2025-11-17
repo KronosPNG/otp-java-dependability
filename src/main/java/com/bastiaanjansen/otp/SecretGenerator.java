@@ -26,6 +26,9 @@ public class SecretGenerator {
      *
      * @return generated secret
      */
+    //@ ensures \result != null;
+    //@ ensures \result.length > 0;
+    //@ pure
     public static byte[] generate() {
         return generate(DEFAULT_BITS);
     }
@@ -39,6 +42,12 @@ public class SecretGenerator {
      *             SHA512: 512 bits
      * @return generated secret
      */
+    //@ requires bits > 0;
+    //@ requires bits % 8 == 0;
+    //@ ensures \result != null;
+    //@ ensures \result.length > 0;
+    //@ signals (IllegalArgumentException e) bits <= 0;
+    //@ pure
     public static byte[] generate(final int bits) {
         if (bits <= 0)
             throw new IllegalArgumentException("Bits must be greater than or equal to 0");

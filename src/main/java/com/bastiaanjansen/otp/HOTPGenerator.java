@@ -23,18 +23,30 @@ public final class HOTPGenerator {
     private static final HMACAlgorithm DEFAULT_HMAC_ALGORITHM = HMACAlgorithm.SHA1;
     private static final String OTP_TYPE = "hotp";
 
+    //@ public invariant passwordLength >= 6 && passwordLength <= 8;
+    //@ public invariant algorithm != null;
+    //@ public invariant secret != null;
+    //@ public invariant secret.length > 0;
     private final int passwordLength;
 
     private final HMACAlgorithm algorithm;
 
     private final byte[] secret;
 
+    //@ requires builder != null;
+    //@ requires builder.passwordLength >= 6 && builder.passwordLength <= 8;
+    //@ requires builder.algorithm != null;
+    //@ requires builder.secret != null && builder.secret.length > 0;
     private HOTPGenerator(final Builder builder) {
         this.passwordLength = builder.passwordLength;
         this.algorithm = builder.algorithm;
         this.secret = builder.secret;
     }
 
+    //@ requires uri != null;
+    //@ ensures \result != null;
+    //@ signals (URISyntaxException e) true;
+    //@ signals (IllegalArgumentException e) true;
     public static HOTPGenerator fromURI(final URI uri) throws URISyntaxException {
         Map<String, String> query = URIHelper.queryItems(uri);
 
@@ -59,14 +71,26 @@ public final class HOTPGenerator {
         return builder.build();
     }
 
+    //@ requires secret != null;
+    //@ requires secret.length > 0;
+    //@ ensures \result != null;
     public static HOTPGenerator withDefaultValues(final byte[] secret) {
         return new HOTPGenerator.Builder(secret).build();
     }
 
+    //@ requires counter >= 0;
+    //@ requires issuer != null;
+    //@ ensures \result != null;
+    //@ signals (URISyntaxException e) true;
     public URI getURI(final int counter, final String issuer) throws URISyntaxException {
         return getURI(counter, issuer, "");
     }
 
+    //@ requires counter >= 0;
+    //@ requires issuer != null;
+    //@ requires account != null;
+    //@ ensures \result != null;
+    //@ signals (URISyntaxException e) true;
     public URI getURI(final int counter, final String issuer, final String account) throws URISyntaxException {
         Map<String, String> query = new HashMap<>();
         query.put(URIHelper.COUNTER, String.valueOf(counter));
@@ -74,18 +98,31 @@ public final class HOTPGenerator {
         return getURI(OTP_TYPE, issuer, account, query);
     }
 
+    //@ ensures \result == passwordLength;
+    //@ ensures \result >= 6 && \result <= 8;
+    //@ pure
     public int getPasswordLength() {
         return passwordLength;
     }
 
+    //@ ensures \result == algorithm;
+    //@ ensures \result != null;
+    //@ pure
     public HMACAlgorithm getAlgorithm() {
         return algorithm;
     }
 
+    //@ requires code != null;
+    //@ requires counter >= 0;
+    //@ pure
     public boolean verify(final String code, final long counter) {
         return verify(code, counter, 0);
     }
 
+    //@ requires code != null;
+    //@ requires counter >= 0;
+    //@ requires delayWindow >= 0;
+    //@ pure
     public boolean verify(final String code, final long counter, final int delayWindow) {
         if (code.length() != passwordLength) return false;
 
@@ -97,6 +134,11 @@ public final class HOTPGenerator {
         return false;
     }
 
+    //@ requires counter >= 0;
+    //@ ensures \result != null;
+    //@ ensures \result.length() == passwordLength;
+    //@ signals (IllegalArgumentException e) counter < 0;
+    //@ signals (IllegalStateException e) true;
     public String generate(final long counter) throws IllegalStateException {
         if (counter < 0)
             throw new IllegalArgumentException("Counter must be greater than or equal to 0");
@@ -115,6 +157,12 @@ public final class HOTPGenerator {
         return getCodeFromHash(hash);
     }
 
+    //@ requires type != null;
+    //@ requires issuer != null;
+    //@ requires account != null;
+    //@ requires query != null;
+    //@ ensures \result != null;
+    //@ signals (URISyntaxException e) true;
     public URI getURI(final String type, final String issuer, final String account, final Map<String, String> query) throws URISyntaxException {
         query.put(URIHelper.DIGITS, String.valueOf(passwordLength));
         query.put(URIHelper.ALGORITHM, algorithm.name());
@@ -132,15 +180,27 @@ public final class HOTPGenerator {
      * @param value base32 value
      * @return bytes array
      */
+    //@ requires value != null;
+    //@ ensures \result != null;
+    //@ pure
     private byte[] decodeBase32(final byte[] value) {
         Base32 codec = new Base32();
         return codec.decode(value);
     }
 
+    //@ requires value >= 0;
+    //@ ensures \result != null;
+    //@ ensures \result.length == Long.BYTES;
+    //@ pure
     private byte[] longToBytes(final long value) {
         return ByteBuffer.allocate(Long.BYTES).putLong(value).array();
     }
 
+    //@ requires secret != null;
+    //@ requires data != null;
+    //@ ensures \result != null;
+    //@ signals (InvalidKeyException e) true;
+    //@ signals (NoSuchAlgorithmException e) true;
     private byte[] generateHash(final byte[] secret, final byte[] data) throws InvalidKeyException, NoSuchAlgorithmException {
         // Create a secret key with correct SHA algorithm
         SecretKeySpec signKey = new SecretKeySpec(secret, "RAW");
@@ -151,6 +211,11 @@ public final class HOTPGenerator {
         return mac.doFinal(data);
     }
 
+    //@ requires hash != null;
+    //@ requires hash.length > 0;
+    //@ ensures \result != null;
+    //@ ensures \result.length() == passwordLength;
+    //@ pure
     private String getCodeFromHash(final byte[] hash) {
         /* Find mask to get last 4 digits:
         1. Set all bits to 1: ~0 -> 11111111 -> 255 decimal -> 0xFF
@@ -191,6 +256,10 @@ public final class HOTPGenerator {
 
     public static final class Builder {
 
+        //@ public invariant passwordLength >= 6 && passwordLength <= 8;
+        //@ public invariant algorithm != null;
+        //@ public invariant secret != null;
+        //@ public invariant secret.length > 0;
         private int passwordLength;
 
         private HMACAlgorithm algorithm;
@@ -210,6 +279,12 @@ public final class HOTPGenerator {
          *
          * @param secret Base32 encoded secret
          */
+        //@ requires secret != null;
+        //@ requires secret.length > 0;
+        //@ ensures this.secret == secret;
+        //@ ensures this.passwordLength == DEFAULT_PASSWORD_LENGTH;
+        //@ ensures this.algorithm == DEFAULT_HMAC_ALGORITHM;
+        //@ signals (IllegalArgumentException e) secret.length == 0;
         public Builder(final byte[] secret) {
             if (secret.length == 0)
                 throw new IllegalArgumentException("Secret must not be empty");
@@ -222,10 +297,16 @@ public final class HOTPGenerator {
         /**
          * @param secret Base32 encoded secret
          */
+        //@ requires secret != null;
+        //@ requires !secret.isEmpty();
         public Builder(String secret) {
             this(secret.getBytes(UTF_8));
         }
 
+        //@ requires passwordLength >= 6 && passwordLength <= 8;
+        //@ ensures this.passwordLength == passwordLength;
+        //@ ensures \result == this;
+        //@ signals (IllegalArgumentException e) passwordLength < 6 || passwordLength > 8;
         public Builder withPasswordLength(final int passwordLength) {
             if (!passwordLengthIsValid(passwordLength))
                 throw new IllegalArgumentException("Password length must be between 6 and 8 digits");
@@ -234,15 +315,21 @@ public final class HOTPGenerator {
             return this;
         }
 
+        //@ requires algorithm != null;
+        //@ ensures this.algorithm == algorithm;
+        //@ ensures \result == this;
         public Builder withAlgorithm(final HMACAlgorithm algorithm) {
             this.algorithm = algorithm;
             return this;
         }
 
+        //@ ensures \result != null;
         public HOTPGenerator build() {
             return new HOTPGenerator(this);
         }
 
+        //@ ensures \result == (passwordLength >= 6 && passwordLength <= 8);
+        //@ pure
         private boolean passwordLengthIsValid(final int passwordLength) {
             return passwordLength >= 6 && passwordLength <= 8;
         }
