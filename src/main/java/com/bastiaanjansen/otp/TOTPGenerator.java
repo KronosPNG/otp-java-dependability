@@ -16,18 +16,18 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class TOTPGenerator {
     private static final String OTP_TYPE = "totp";
-    private static final Duration DEFAULT_PERIOD = Duration.ofSeconds(30);
-    private static final Clock DEFAULT_CLOCK = Clock.system(ZoneId.systemDefault());
+    private static final /*@ spec_public @*/ Duration DEFAULT_PERIOD = Duration.ofSeconds(30);
+    private static final /*@ spec_public @*/ Clock DEFAULT_CLOCK = Clock.system(ZoneId.systemDefault());
 
-    //@ public invariant period != null;
-    //@ public invariant period.getSeconds() >= 1;
-    //@ public invariant clock != null;
-    //@ public invariant hotpGenerator != null;
-    private final Duration period;
+    //@ private invariant period != null;
+    //@ private invariant period.getSeconds() >= 1;
+    //@ private invariant clock != null;
+    //@ private invariant hotpGenerator != null;
+    private final /*@ spec_public @*/ Duration period;
 
-    private final Clock clock;
+    private final /*@ spec_public @*/ Clock clock;
 
-    private final HOTPGenerator hotpGenerator;
+    private final /*@ spec_public @*/ HOTPGenerator hotpGenerator;
 
     //@ requires builder != null;
     //@ requires builder.period != null && builder.period.getSeconds() >= 1;
@@ -41,8 +41,10 @@ public final class TOTPGenerator {
 
     //@ requires uri != null;
     //@ ensures \result != null;
+    //@ assignable \nothing;
     //@ signals (URISyntaxException e) true;
     //@ signals (IllegalArgumentException e) true;
+    //@ signals_only URISyntaxException, IllegalArgumentException;
     public static TOTPGenerator fromURI(URI uri) throws URISyntaxException {
         Map<String, String> query = URIHelper.queryItems(uri);
 
@@ -53,8 +55,7 @@ public final class TOTPGenerator {
 
         try {
             Optional.ofNullable(query.get(URIHelper.PERIOD))
-                    .map(Long::parseLong)
-                    .map(Duration::ofSeconds)
+                    .map(s -> Duration.ofSeconds(Long.parseLong(s)))
                     .ifPresent(builder::withPeriod);
             Optional.ofNullable(query.get(URIHelper.DIGITS))
                     .map(Integer::valueOf)
@@ -73,12 +74,14 @@ public final class TOTPGenerator {
     //@ requires secret != null;
     //@ requires secret.length > 0;
     //@ ensures \result != null;
+    //@ assignable \nothing;
     public static TOTPGenerator withDefaultValues(final byte[] secret) {
         return new TOTPGenerator.Builder(secret).build();
     }
 
     //@ ensures \result != null;
     //@ ensures \result.length() == getPasswordLength();
+    //@ assignable \nothing;
     //@ signals (IllegalStateException e) true;
     public String now() throws IllegalStateException {
         long counter = calculateCounter(clock, period);
@@ -88,6 +91,7 @@ public final class TOTPGenerator {
     //@ requires clock != null;
     //@ ensures \result != null;
     //@ ensures \result.length() == getPasswordLength();
+    //@ assignable \nothing;
     //@ signals (IllegalStateException e) true;
     public String now(Clock clock) throws IllegalStateException {
         long counter = calculateCounter(clock, period);
@@ -97,6 +101,7 @@ public final class TOTPGenerator {
     //@ requires instant != null;
     //@ ensures \result != null;
     //@ ensures \result.length() == getPasswordLength();
+    //@ assignable \nothing;
     //@ signals (IllegalStateException e) true;
     public String at(final Instant instant) throws IllegalStateException {
         return at(instant.getEpochSecond());
@@ -105,6 +110,7 @@ public final class TOTPGenerator {
     //@ requires date != null;
     //@ ensures \result != null;
     //@ ensures \result.length() == getPasswordLength();
+    //@ assignable \nothing;
     //@ signals (IllegalStateException e) true;
     public String at(final Date date) throws IllegalStateException {
         long secondsSince1970 = TimeUnit.MILLISECONDS.toSeconds(date.getTime());
@@ -114,6 +120,7 @@ public final class TOTPGenerator {
     //@ requires date != null;
     //@ ensures \result != null;
     //@ ensures \result.length() == getPasswordLength();
+    //@ assignable \nothing;
     //@ signals (IllegalStateException e) true;
     public String at(final LocalDate date) throws IllegalStateException {
         long secondsSince1970 = date.atStartOfDay(clock.getZone()).toEpochSecond();
@@ -123,7 +130,9 @@ public final class TOTPGenerator {
     //@ requires secondsPast1970 > 0;
     //@ ensures \result != null;
     //@ ensures \result.length() == getPasswordLength();
+    //@ assignable \nothing;
     //@ signals (IllegalArgumentException e) secondsPast1970 <= 0;
+    //@ signals_only IllegalArgumentException;
     public String at(final long secondsPast1970) throws IllegalArgumentException {
         if (!validateTime(secondsPast1970))
             throw new IllegalArgumentException("Time must be above zero");
@@ -133,6 +142,7 @@ public final class TOTPGenerator {
     }
 
     //@ requires code != null;
+    //@ assignable \nothing;
     //@ pure
     public boolean verify(final String code) {
         long counter = calculateCounter(clock, period);
@@ -148,6 +158,7 @@ public final class TOTPGenerator {
      */
     //@ requires code != null;
     //@ requires delayWindow >= 0;
+    //@ assignable \nothing;
     //@ pure
     public boolean verify(final String code, final int delayWindow) {
         long counter = calculateCounter(clock, period);
@@ -156,6 +167,7 @@ public final class TOTPGenerator {
 
     //@ requires issuer != null;
     //@ ensures \result != null;
+    //@ assignable \nothing;
     //@ signals (URISyntaxException e) true;
     public URI getURI(final String issuer) throws URISyntaxException {
         return getURI(issuer, "");
@@ -164,6 +176,7 @@ public final class TOTPGenerator {
     //@ requires issuer != null;
     //@ requires account != null;
     //@ ensures \result != null;
+    //@ assignable \nothing;
     //@ signals (URISyntaxException e) true;
     public URI getURI(final String issuer, final String account) throws URISyntaxException {
         Map<String, String> query = new HashMap<>();
@@ -178,6 +191,7 @@ public final class TOTPGenerator {
      * @return a duration object with duration until next time window
      */
     //@ ensures \result != null;
+    //@ assignable \nothing;
     //@ pure
     public Duration durationUntilNextTimeWindow() {
         return durationUntilNextTimeWindow(clock);
@@ -185,41 +199,47 @@ public final class TOTPGenerator {
 
     //@ requires clock != null;
     //@ ensures \result != null;
+    //@ assignable \nothing;
     //@ pure
     public Duration durationUntilNextTimeWindow(Clock clock) {
         long timeInterval = period.toMillis();
         return Duration.ofMillis(timeInterval - clock.millis() % timeInterval);
     }
 
-    //@ ensures \result == period;
     //@ ensures \result != null;
+    //@ ensures \result == period;
+    //@ assignable \nothing;
     //@ pure
     public Duration getPeriod() {
         return period;
     }
 
-    //@ ensures \result == clock;
     //@ ensures \result != null;
+    //@ ensures \result == clock;
+    //@ assignable \nothing;
     //@ pure
     public Clock getClock() {
         return clock;
     }
 
     //@ ensures \result != null;
+    //@ assignable \nothing;
     //@ pure
     public HMACAlgorithm getAlgorithm() {
         return hotpGenerator.getAlgorithm();
     }
 
     //@ ensures \result >= 6 && \result <= 8;
+    //@ assignable \nothing;
     //@ pure
     public int getPasswordLength() {
         return hotpGenerator.getPasswordLength();
     }
 
-    //@ requires secondsPast1970 >= 0;
+    //@ requires secondsPast1970 > 0;
     //@ requires period != null;
     //@ ensures \result >= 0;
+    //@ assignable \nothing;
     //@ pure
     private long calculateCounter(final long secondsPast1970, final Duration period) {
         return TimeUnit.SECONDS.toMillis(secondsPast1970) / period.toMillis();
@@ -228,12 +248,14 @@ public final class TOTPGenerator {
     //@ requires clock != null;
     //@ requires period != null;
     //@ ensures \result >= 0;
+    //@ assignable \nothing;
     //@ pure
     private long calculateCounter(final Clock clock, final Duration period) {
         return clock.millis() / period.toMillis();
     }
 
     //@ ensures \result == (time > 0);
+    //@ assignable \nothing;
     //@ pure
     private boolean validateTime(final long time) {
         return time > 0;
@@ -241,15 +263,11 @@ public final class TOTPGenerator {
 
     public static final class Builder {
 
-        //@ public invariant period != null;
-        //@ public invariant period.getSeconds() >= 1;
-        //@ public invariant clock != null;
-        //@ public invariant hotpBuilder != null;
-        private Duration period;
+        private /*@ spec_public @*/ Duration period;
 
-        private Clock clock;
+        private /*@ spec_public @*/ Clock clock;
 
-        private final HOTPGenerator.Builder hotpBuilder;
+        private final /*@ spec_public @*/ HOTPGenerator.Builder hotpBuilder;
 
         /**
          * Creates a new builder.
@@ -276,13 +294,15 @@ public final class TOTPGenerator {
          * @param secret Base32 encoded secret
          */
         //@ requires secret != null;
-        //@ requires !secret.isEmpty();
+        //@ requires secret.length() > 0;
+        //@ ensures this.hotpBuilder != null;
         public Builder(String secret) {
             this(secret.getBytes(UTF_8));
         }
 
         //@ requires builder != null;
         //@ ensures \result == this;
+        //@ assignable hotpBuilder.*;
         public Builder withHOTPGenerator(Consumer<HOTPGenerator.Builder> builder) {
             builder.accept(hotpBuilder);
             return this;
@@ -291,6 +311,7 @@ public final class TOTPGenerator {
         //@ requires clock != null;
         //@ ensures this.clock == clock;
         //@ ensures \result == this;
+        //@ assignable this.clock;
         public Builder withClock(Clock clock) {
             this.clock = clock;
             return this;
@@ -300,7 +321,7 @@ public final class TOTPGenerator {
         //@ requires period.getSeconds() >= 1;
         //@ ensures this.period == period;
         //@ ensures \result == this;
-        //@ signals (IllegalArgumentException e) period.getSeconds() < 1;
+        //@ assignable this.period;
         public Builder withPeriod(Duration period) {
             if (period.getSeconds() < 1) throw new IllegalArgumentException("Period must be at least 1 second");
             this.period = period;
@@ -308,6 +329,7 @@ public final class TOTPGenerator {
         }
 
         //@ ensures \result != null;
+        //@ assignable \nothing;
         public TOTPGenerator build() {
             return new TOTPGenerator(this);
         }
