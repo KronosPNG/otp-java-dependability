@@ -1,0 +1,17 @@
+# Docker Compose for OTP Server
+
+services:
+  otp-server:
+    build: .
+    container_name: otp-server
+    ports:
+      - "7000:7000"
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

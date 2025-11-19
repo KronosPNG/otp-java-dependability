@@ -13,13 +13,20 @@ public enum HMACAlgorithm {
     SHA384("HmacSHA384"),
     SHA512("HmacSHA512");
 
-    private final String name;
+    private final /*@ spec_public @*/ String algorithmName;
 
-    HMACAlgorithm(String name) {
-        this.name = name;
+    //@ private invariant algorithmName != null && algorithmName.length() > 0;
+    //@ ensures this.algorithmName == algorithmName;
+    HMACAlgorithm(String algorithmName) {
+        this.algorithmName = algorithmName;
     }
 
+    //@ ensures \result != null;
+    //@ ensures \result.equals(algorithmName);
+    //@ ensures \result.length() > 0;
+    //@ assignable \nothing;
+    //@ pure
     public String getHMACName() {
-        return name;
+        return algorithmName;
     }
 }

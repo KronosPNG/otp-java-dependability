@@ -32,6 +32,13 @@ public class URIHelper {
      * @param uri to get query items from
      * @return map of query items from URI
      */
+    //@ requires uri != null;
+    //@ requires uri.getQuery() != null;
+    //@ requires uri.getQuery().length() > 0;
+    //@ ensures \result != null;
+    //@ assignable \nothing;
+    //@ signals (IllegalStateException e) true;
+    //@ signals_only IllegalStateException;
     public static Map<String, String> queryItems(URI uri) {
         Map<String, String> items = new LinkedHashMap<>();
         String query = uri.getQuery();
@@ -61,6 +68,14 @@ public class URIHelper {
      * @return created URI
      * @throws URISyntaxException when URI cannot be created
      */
+    //@ requires scheme != null;
+    //@ requires host != null;
+    //@ requires path != null;
+    //@ requires query != null;
+    //@ ensures \result != null;
+    //@ assignable \nothing;
+    //@ signals (URISyntaxException e) true;
+    //@ signals_only URISyntaxException;
     public static URI createURI(String scheme, String host, String path, Map<String, String> query) throws URISyntaxException {
         String uriString = String.format("%s://%s/%s?", scheme, host, path);
 
@@ -71,6 +86,11 @@ public class URIHelper {
         return new URI(uri);
     }
 
+    //@ requires value != null;
+    //@ ensures \result != null;
+    //@ assignable \nothing;
+    //@ signals (IllegalArgumentException e) true;
+    //@ signals_only IllegalArgumentException;
     public static String encode(String value) {
         try {
             return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
