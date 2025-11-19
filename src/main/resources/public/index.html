@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 OTP Generator</h1>
+            <p>Generate and verify One-Time Passwords (TOTP & HOTP)</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('generate')">Generate OTP</button>
+            <button class="tab-btn" onclick="showTab('verify')">Verify OTP</button>
+            <button class="tab-btn" onclick="showTab('secret')">Generate Secret</button>
+        </div>
+
+        <!-- Generate Secret Tab -->
+        <div id="secret-tab" class="tab-content">
+            <div class="card">
+                <h2>Generate Secret</h2>
+                <div class="form-group">
+                    <label for="secret-length">Secret Length (bytes):</label>
+                    <input type="number" id="secret-length" value="20" min="16" max="64">
+                </div>
+                <button onclick="generateSecret()" class="btn btn-primary">Generate Secret</button>
+                
+                <div id="secret-result" class="result hidden">
+                    <h3>Generated Secret</h3>
+                    <div class="result-item">
+                        <label>Base32 (for QR codes):</label>
+                        <div class="code-box">
+                            <code id="secret-base32"></code>
+                            <button onclick="copyToClipboard('secret-base32', event)" class="btn-copy">Copy</button>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <label>Hex:</label>
+                        <div class="code-box">
+                            <code id="secret-hex"></code>
+                            <button onclick="copyToClipboard('secret-hex', event)" class="btn-copy">Copy</button>
+                        </div>
+                    </div>
+                    <button onclick="useSecretForOTP()" class="btn btn-secondary">Use This Secret Below</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generate OTP Tab -->
+        <div id="generate-tab" class="tab-content active">
+            <div class="card">
+                <h2>Generate OTP</h2>
+                
+                <div class="form-group">
+                    <label>OTP Type:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="otp-type" value="totp" checked onchange="toggleCounterField()"> TOTP (Time-based)</label>
+                        <label><input type="radio" name="otp-type" value="hotp" onchange="toggleCounterField()"> HOTP (Counter-based)</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gen-secret-input">Secret (Base32 or Hex):</label>
+                    <input type="text" id="gen-secret-input" placeholder="Enter your secret key">
+                    <small>Paste the Base32 or Hex secret generated above</small>
+                </div>
+
+                <div class="form-group" id="counter-group" style="display: none;">
+                    <label for="gen-counter">Counter:</label>
+                    <input type="number" id="gen-counter" value="0" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="gen-algorithm">Algorithm:</label>
+                    <select id="gen-algorithm">
+                        <option value="SHA1">SHA1</option>
+                        <option value="SHA256">SHA256</option>
+                        <option value="SHA512">SHA512</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="gen-length">Code Length:</label>
+                    <input type="number" id="gen-length" value="6" min="6" max="8">
+                </div>
+
+                <div class="form-group" id="period-group">
+                    <label for="gen-period">Period (seconds):</label>
+                    <input type="number" id="gen-period" value="30" min="15" max="60">
+                </div>
+
+                <button onclick="generateOTP()" class="btn btn-primary">Generate OTP Code</button>
+
+                <div id="otp-result" class="result hidden">
+                    <h3>Generated Code</h3>
+                    <div class="otp-display">
+                        <span id="otp-code" class="otp-code"></span>
+                        <button onclick="copyToClipboard('otp-code', event)" class="btn-copy">Copy</button>
+                    </div>
+                    <div id="countdown-container" class="countdown hidden">
+                        <small>Time remaining: <span id="countdown"></span>s</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QR Code URI Generator -->
+            <div class="card">
+                <h2>Generate QR Code URI</h2>
+                <div class="form-group">
+                    <label for="uri-issuer">Issuer (App/Service Name):</label>
+                    <input type="text" id="uri-issuer" placeholder="e.g., MyApp, GitHub">
+                </div>
+                <div class="form-group">
+                    <label for="uri-account">Account (Email/Username):</label>
+                    <input type="text" id="uri-account" placeholder="e.g., user@example.com">
+                </div>
+                <button onclick="generateURI()" class="btn btn-secondary">Generate URI</button>
+                
+                <div id="uri-result" class="result hidden">
+                    <h3>OTP Auth URI</h3>
+                    <div class="code-box">
+                        <code id="uri-text" class="small-text"></code>
+                        <button onclick="copyToClipboard('uri-text', event)" class="btn-copy">Copy</button>
+                    </div>
+                    <small>Use this URI to generate a QR code for authenticator apps</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verify OTP Tab -->
+        <div id="verify-tab" class="tab-content">
+            <div class="card">
+                <h2>Verify OTP</h2>
+                
+                <div class="form-group">
+                    <label>OTP Type:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="verify-otp-type" value="totp" checked onchange="toggleVerifyCounterField()"> TOTP</label>
+                        <label><input type="radio" name="verify-otp-type" value="hotp" onchange="toggleVerifyCounterField()"> HOTP</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-secret">Secret (Base32 or Hex):</label>
+                    <input type="text" id="verify-secret" placeholder="Enter your secret key">
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-code">Code to Verify:</label>
+                    <input type="text" id="verify-code" placeholder="Enter 6-8 digit code" maxlength="8">
+                </div>
+
+                <div class="form-group" id="verify-counter-group" style="display: none;">
+                    <label for="verify-counter">Counter:</label>
+                    <input type="number" id="verify-counter" value="0" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-algorithm">Algorithm:</label>
+                    <select id="verify-algorithm">
+                        <option value="SHA1">SHA1</option>
+                        <option value="SHA256">SHA256</option>
+                        <option value="SHA512">SHA512</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-length">Code Length:</label>
+                    <input type="number" id="verify-length" value="6" min="6" max="8">
+                </div>
+
+                <div class="form-group" id="verify-period-group">
+                    <label for="verify-period">Period (seconds):</label>
+                    <input type="number" id="verify-period" value="30" min="15" max="60">
+                </div>
+
+                <div class="form-group" id="verify-delay-group">
+                    <label for="verify-delay">Time Delay (seconds):</label>
+                    <input type="number" id="verify-delay" value="0" min="0" max="60">
+                    <small>Allow codes from past/future time windows</small>
+                </div>
+
+                <button onclick="verifyOTP()" class="btn btn-primary">Verify Code</button>
+
+                <div id="verify-result" class="result hidden">
+                    <div class="verify-status"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Powered by OTP-Java with Javalin</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

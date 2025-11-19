@@ -34,9 +34,11 @@ public class OTPServer {
         Javalin app = Javalin.create(config -> {
             config.showJavalinBanner = false;
             config.http.defaultContentType = "application/json";
+            config.staticFiles.add("/public");
         }).start(port);
         
         System.out.println("OTP Server started on port " + port);
+        System.out.println("Web UI available at http://localhost:" + port);
         
         // Secret generation endpoint
         app.post("/api/secret/generate", OTPServer::generateSecret);

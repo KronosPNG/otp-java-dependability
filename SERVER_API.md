@@ -2,6 +2,20 @@
 
 A lightweight REST API server for OTP (One-Time Password) generation and verification using Javalin.
 
+## Web UI
+
+After starting the server, open your browser and navigate to:
+```
+http://localhost:7000
+```
+
+The web interface provides:
+- 🔑 Secret generation with Base32/Hex output
+- 🔐 TOTP/HOTP code generation
+- ✅ Code verification
+- 📱 QR code URI generation for authenticator apps
+- ⏱️ Live countdown timer for TOTP codes
+
 ## Running the Server
 
 ### Using Maven:
