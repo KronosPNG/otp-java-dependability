@@ -83,6 +83,15 @@ jobs:
     needs: build-and-test
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dependability')
     
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -97,32 +106,21 @@ jobs:
     - name: Build application
       run: mvn clean package -DskipTests
     
+    - name: Create deployment directory
+      run: |
+        mkdir -p _site/app
+        mkdir -p _site/coverage
+        mkdir -p _site/mutation
+        cp -r src/main/resources/public/* _site/app/
+        cp -r target/site/jacoco/* _site/coverage/ || true
+        cp -r target/pit-reports/* _site/mutation/ || true
+    
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v3
+    
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./src/main/resources/public
-        publish_branch: gh-pages
-        destination_dir: app
-    
-    - name: Deploy coverage report to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./target/site/jacoco
-        publish_branch: gh-pages
-        destination_dir: coverage
-        keep_files: true
-    
-    - name: Deploy PIT report to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./target/pit-reports
-        publish_branch: gh-pages
-        destination_dir: mutation
-        keep_files: true
-      if: always()
+      id: deployment
+      uses: actions/deploy-pages@v4
     
     - name: Create Release (if tagged)
       if: startsWith(github.ref, 'refs/tags/')
