@@ -114,6 +114,7 @@ jobs:
         cp -r src/main/resources/public/* _site/app/
         cp -r target/site/jacoco/* _site/coverage/ || true
         cp -r target/pit-reports/* _site/mutation/ || true
+        echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=app/"></head><body><p>Redirecting to <a href="app/">OTP Generator</a>...</p></body></html>' > _site/index.html
     
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
@@ -156,7 +157,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ghcr.io/${{ github.repository }}:latest
-          ghcr.io/${{ github.repository }}:${{ github.sha }}
+          ghcr.io/${{ github.repository_owner }}/otp-java-dependability:latest
+          ghcr.io/${{ github.repository_owner }}/otp-java-dependability:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
