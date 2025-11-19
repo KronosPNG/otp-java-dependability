@@ -85,6 +85,27 @@
             <version>1.37</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Javalin for lightweight web server -->
+        <dependency>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin</artifactId>
+            <version>5.6.3</version>
+        </dependency>
+
+        <!-- SLF4J simple logger for Javalin -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+
+        <!-- Jackson for JSON processing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.3</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -286,7 +307,7 @@
                 </configuration>
             </plugin>
             
-            <!-- OpenJML verification plugin -->
+            <!-- Exec plugin for OpenJML verification and benchmarks -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -311,6 +332,20 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>run-benchmarks</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-jar</argument>
+                                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -322,6 +357,7 @@
                     <excludes>
                         <exclude>com/bastiaanjansen/otp/benchmarks/**</exclude>
                         <exclude>**/*jmh_generated*</exclude>
+                        <exclude>com/bastiaanjansen/otp/server/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -395,6 +431,7 @@
                     <excludedClasses>
                         <param>com.bastiaanjansen.otp.benchmarks.*</param>
                         <param>*jmh_generated*</param>
+                        <param>com.bastiaanjansen.otp.server.*</param>
                     </excludedClasses>
 
                     <!-- Mutators to use -->
@@ -429,28 +466,6 @@
                                     <mainClass>org.openjdk.jmh.Main</mainClass>
                                 </transformer>
                             </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>run-benchmarks</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-jar</argument>
-                                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
-                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
