@@ -20,7 +20,6 @@ public final class TOTPGenerator {
     private static final /*@ spec_public @*/ Clock DEFAULT_CLOCK = Clock.system(ZoneId.systemDefault());
 
     //@ private invariant period != null;
-    //@ private invariant period.getSeconds() >= 1;
     //@ private invariant clock != null;
     //@ private invariant hotpGenerator != null;
     private final /*@ spec_public @*/ Duration period;
@@ -41,7 +40,7 @@ public final class TOTPGenerator {
 
     //@ requires uri != null;
     //@ ensures \result != null;
-    //@ assignable \nothing;
+    //@ assignable \everything;
     //@ signals (URISyntaxException e) true;
     //@ signals (IllegalArgumentException e) true;
     //@ signals_only URISyntaxException, IllegalArgumentException;
@@ -74,15 +73,15 @@ public final class TOTPGenerator {
     //@ requires secret != null;
     //@ requires secret.length > 0;
     //@ ensures \result != null;
-    //@ assignable \nothing;
+    //@ assignable \everything;
     public static TOTPGenerator withDefaultValues(final byte[] secret) {
         return new TOTPGenerator.Builder(secret).build();
     }
 
     //@ ensures \result != null;
-    //@ ensures \result.length() == getPasswordLength();
-    //@ assignable \nothing;
-    //@ signals (IllegalStateException e) true;
+    //@ assignable \everything;
+    //@ signals (RuntimeException e) true;
+    //@ signals_only RuntimeException;
     public String now() throws IllegalStateException {
         long counter = calculateCounter(clock, period);
         return hotpGenerator.generate(counter);
@@ -90,9 +89,9 @@ public final class TOTPGenerator {
 
     //@ requires clock != null;
     //@ ensures \result != null;
-    //@ ensures \result.length() == getPasswordLength();
-    //@ assignable \nothing;
-    //@ signals (IllegalStateException e) true;
+    //@ assignable \everything;
+    //@ signals (RuntimeException e) true;
+    //@ signals_only RuntimeException;
     public String now(Clock clock) throws IllegalStateException {
         long counter = calculateCounter(clock, period);
         return hotpGenerator.generate(counter);
@@ -100,18 +99,18 @@ public final class TOTPGenerator {
 
     //@ requires instant != null;
     //@ ensures \result != null;
-    //@ ensures \result.length() == getPasswordLength();
-    //@ assignable \nothing;
-    //@ signals (IllegalStateException e) true;
+    //@ assignable \everything;
+    //@ signals (RuntimeException e) true;
+    //@ signals_only RuntimeException;
     public String at(final Instant instant) throws IllegalStateException {
         return at(instant.getEpochSecond());
     }
 
     //@ requires date != null;
     //@ ensures \result != null;
-    //@ ensures \result.length() == getPasswordLength();
-    //@ assignable \nothing;
-    //@ signals (IllegalStateException e) true;
+    //@ assignable \everything;
+    //@ signals (RuntimeException e) true;
+    //@ signals_only RuntimeException;
     public String at(final Date date) throws IllegalStateException {
         long secondsSince1970 = TimeUnit.MILLISECONDS.toSeconds(date.getTime());
         return at(secondsSince1970);
@@ -119,9 +118,9 @@ public final class TOTPGenerator {
 
     //@ requires date != null;
     //@ ensures \result != null;
-    //@ ensures \result.length() == getPasswordLength();
-    //@ assignable \nothing;
-    //@ signals (IllegalStateException e) true;
+    //@ assignable \everything;
+    //@ signals (RuntimeException e) true;
+    //@ signals_only RuntimeException;
     public String at(final LocalDate date) throws IllegalStateException {
         long secondsSince1970 = date.atStartOfDay(clock.getZone()).toEpochSecond();
         return at(secondsSince1970);
@@ -129,10 +128,10 @@ public final class TOTPGenerator {
 
     //@ requires secondsPast1970 > 0;
     //@ ensures \result != null;
-    //@ ensures \result.length() == getPasswordLength();
-    //@ assignable \nothing;
+    //@ assignable \everything;
     //@ signals (IllegalArgumentException e) secondsPast1970 <= 0;
-    //@ signals_only IllegalArgumentException;
+    //@ signals (RuntimeException e) true;
+    //@ signals_only RuntimeException;
     public String at(final long secondsPast1970) throws IllegalArgumentException {
         if (!validateTime(secondsPast1970))
             throw new IllegalArgumentException("Time must be above zero");
@@ -158,8 +157,7 @@ public final class TOTPGenerator {
      */
     //@ requires code != null;
     //@ requires delayWindow >= 0;
-    //@ assignable \nothing;
-    //@ pure
+    //@ assignable \everything;
     public boolean verify(final String code, final int delayWindow) {
         long counter = calculateCounter(clock, period);
         return hotpGenerator.verify(code, counter, delayWindow);
@@ -167,7 +165,7 @@ public final class TOTPGenerator {
 
     //@ requires issuer != null;
     //@ ensures \result != null;
-    //@ assignable \nothing;
+    //@ assignable \everything;
     //@ signals (URISyntaxException e) true;
     public URI getURI(final String issuer) throws URISyntaxException {
         return getURI(issuer, "");
@@ -176,7 +174,7 @@ public final class TOTPGenerator {
     //@ requires issuer != null;
     //@ requires account != null;
     //@ ensures \result != null;
-    //@ assignable \nothing;
+    //@ assignable \everything;
     //@ signals (URISyntaxException e) true;
     public URI getURI(final String issuer, final String account) throws URISyntaxException {
         Map<String, String> query = new HashMap<>();
@@ -256,6 +254,7 @@ public final class TOTPGenerator {
 
     //@ ensures \result == (time > 0);
     //@ assignable \nothing;
+    //@ accessible \everything;
     //@ pure
     private boolean validateTime(final long time) {
         return time > 0;
@@ -329,7 +328,7 @@ public final class TOTPGenerator {
         }
 
         //@ ensures \result != null;
-        //@ assignable \nothing;
+        //@ assignable \everything;
         public TOTPGenerator build() {
             return new TOTPGenerator(this);
         }

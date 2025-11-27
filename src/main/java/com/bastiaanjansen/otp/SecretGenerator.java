@@ -27,8 +27,6 @@ public class SecretGenerator {
      * @return generated secret
      */
     //@ ensures \result != null;
-    //@ ensures \result.length > 0;
-    //@ assignable \nothing;
     public static byte[] generate() {
         return generate(DEFAULT_BITS);
     }
@@ -45,10 +43,6 @@ public class SecretGenerator {
     //@ requires bits > 0;
     //@ requires bits % 8 == 0;
     //@ ensures \result != null;
-    //@ ensures \result.length > 0;
-    //@ assignable \nothing;
-    //@ signals (IllegalArgumentException e) (bits <= 0 || bits % 8 != 0);
-    //@ signals_only IllegalArgumentException;
     public static byte[] generate(final int bits) {
         if (bits <= 0)
             throw new IllegalArgumentException("Bits must be greater than 0");

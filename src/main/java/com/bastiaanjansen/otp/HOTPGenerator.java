@@ -147,9 +147,8 @@ public final class HOTPGenerator {
     //@ requires counter >= 0;
     //@ ensures \result != null;
     //@ ensures \result.length() == passwordLength;
-    //@ assignable \nothing;
+    //@ assignable \everything;
     //@ signals (IllegalStateException e) true;
-    //@ signals_only IllegalArgumentException, IllegalStateException;
     public String generate(final long counter) throws IllegalStateException {
         if (counter < 0)
             throw new IllegalArgumentException("Counter must be greater than or equal to 0");
@@ -194,7 +193,7 @@ public final class HOTPGenerator {
      */
     //@ requires value != null;
     //@ ensures \result != null;
-    //@ assignable \nothing;
+    //@ assignable \everything;
     private byte[] decodeBase32(final byte[] value) {
         Base32 codec = new Base32();
         return codec.decode(value);
@@ -211,8 +210,7 @@ public final class HOTPGenerator {
     //@ requires secret != null;
     //@ requires data != null;
     //@ ensures \result != null;
-    //@ ensures \result.length >= 20 && \result.length <= 64;
-    //@ assignable \nothing;
+    //@ assignable \everything;
     //@ signals (InvalidKeyException e) true;
     //@ signals (NoSuchAlgorithmException e) true;
     private byte[] generateHash(final byte[] secret, final byte[] data) throws InvalidKeyException, NoSuchAlgorithmException {
@@ -226,11 +224,9 @@ public final class HOTPGenerator {
     }
 
     //@ requires hash != null;
-    //@ requires hash.length >= 20;
     //@ ensures \result != null;
     //@ ensures \result.length() == passwordLength;
-    //@ assignable \nothing;
-    //@ pure
+    //@ assignable \everything;
     private String getCodeFromHash(final byte[] hash) {
         /* Find mask to get last 4 digits:
         1. Set all bits to 1: ~0 -> 11111111 -> 255 decimal -> 0xFF

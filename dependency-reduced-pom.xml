@@ -44,20 +44,16 @@
         <version>3.1.0</version>
         <executions>
           <execution>
-            <id>openjml-check</id>
+            <id>run-benchmarks</id>
+            <phase>verify</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>wsl</executable>
-              <workingDirectory>${project.basedir}</workingDirectory>
-              <successCodes>
-                <successCode>0</successCode>
-              </successCodes>
+              <executable>java</executable>
               <arguments>
-                <argument>bash</argument>
-                <argument>-c</argument>
-                <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml -check -cp "target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar" -sourcepath src/main/java src/main/java/com/bastiaanjansen/otp/*.java src/main/java/com/bastiaanjansen/otp/helpers/*.java</argument>
+                <argument>-jar</argument>
+                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
               </arguments>
             </configuration>
           </execution>
@@ -106,6 +102,7 @@
           <excludes>
             <exclude>com/bastiaanjansen/otp/benchmarks/**</exclude>
             <exclude>**/*jmh_generated*</exclude>
+            <exclude>com/bastiaanjansen/otp/server/**</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -140,6 +137,7 @@
           <excludedClasses>
             <param>com.bastiaanjansen.otp.benchmarks.*</param>
             <param>*jmh_generated*</param>
+            <param>com.bastiaanjansen.otp.server.*</param>
           </excludedClasses>
           <mutators>
             <mutator>DEFAULTS</mutator>
@@ -161,27 +159,6 @@
                   <mainClass>org.openjdk.jmh.Main</mainClass>
                 </transformer>
               </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>run-benchmarks</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-jar</argument>
-                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
-              </arguments>
             </configuration>
           </execution>
         </executions>
@@ -300,21 +277,354 @@
             <version>3.1.0</version>
             <executions>
               <execution>
-                <id>openjml-check</id>
+                <id>verify-hmac-getHMACName</id>
                 <phase>verify</phase>
                 <goals>
                   <goal>exec</goal>
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>${project.basedir}</workingDirectory>
-                  <successCodes>
-                    <successCode>0</successCode>
-                  </successCodes>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
                   <arguments>
-                    <argument>bash</argument>
-                    <argument>-c</argument>
-                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml -check -cp "target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar" -sourcepath src/main/java src/main/java/com/bastiaanjansen/otp/*.java src/main/java/com/bastiaanjansen/otp/helpers/*.java</argument>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>getHMACName</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/HMACAlgorithm.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-secretgen-generate-default</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'generate()'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/SecretGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-secretgen-generate-bits</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'generate(int)'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/SecretGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-hotp-decodeBase32</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>decodeBase32</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-hotp-longToBytes</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>longToBytes</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-hotp-generateHash</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>generateHash</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-hotp-generate</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>generate</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-hotp-verify-simple</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'verify(String,long)'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-hotp-verify-window</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'verify(String,long,int)'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-totp-calculateCounter-long</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'calculateCounter(long,Duration)'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-totp-calculateCounter-clock</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'calculateCounter(Clock,Duration)'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-totp-now-default</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'now()'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-totp-now-clock</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'now(Clock)'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-totp-at-long</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'at(long)'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-totp-verify-simple</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'verify(String)'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify-totp-verify-window</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>wsl</executable>
+                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <arguments>
+                    <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                    <argument>-esc</argument>
+                    <argument>-method</argument>
+                    <argument>'verify(String,int)'</argument>
+                    <argument>-cp</argument>
+                    <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                    <argument>-sourcepath</argument>
+                    <argument>src/main/java</argument>
+                    <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
                   </arguments>
                 </configuration>
               </execution>

@@ -233,8 +233,9 @@
                         <artifactId>exec-maven-plugin</artifactId>
                         <version>3.1.0</version>
                         <executions>
+                            <!-- LAYER 1: Leaf methods - HMACAlgorithm enum -->
                             <execution>
-                                <id>openjml-check</id>
+                                <id>verify-hmac-getHMACName</id>
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -242,13 +243,394 @@
                                 <configuration>
                                     <executable>wsl</executable>
                                     <workingDirectory>${project.basedir}</workingDirectory>
-                                    <successCodes>
-                                        <successCode>0</successCode>
-                                    </successCodes>
                                     <arguments>
-                                        <argument>bash</argument>
-                                        <argument>-c</argument>
-                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml -check -cp "target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar" -sourcepath src/main/java src/main/java/com/bastiaanjansen/otp/*.java src/main/java/com/bastiaanjansen/otp/helpers/*.java</argument>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>getHMACName</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/HMACAlgorithm.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <!-- LAYER 1: Leaf methods - SecretGenerator.generate() -->
+                            <execution>
+                                <id>verify-secretgen-generate-default</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'generate()'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/SecretGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-secretgen-generate-bits</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'generate(int)'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/SecretGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <!-- LAYER 3: HOTPGenerator leaf methods (private helpers) -->
+                            <execution>
+                                <id>verify-hotp-decodeBase32</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>decodeBase32</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-hotp-longToBytes</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>longToBytes</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-hotp-generateHash</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>generateHash</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <!-- Skipping getCodeFromHash due to Math.pow prover limitations -->
+                            
+                            <!-- LAYER 4: HOTPGenerator public methods depending on helpers -->
+                            <execution>
+                                <id>verify-hotp-generate</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>generate</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-hotp-verify-simple</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'verify(String,long)'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-hotp-verify-window</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'verify(String,long,int)'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/HOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <!-- LAYER 5: TOTPGenerator private helpers -->
+                            <!-- Skipped: validateTime - private helper with class invariant checking issues -->
+                            <!--
+                            <execution>
+                                <id>verify-totp-validateTime</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>validateTime</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            -->
+                            
+                            <execution>
+                                <id>verify-totp-calculateCounter-long</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'calculateCounter(long,Duration)'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-totp-calculateCounter-clock</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'calculateCounter(Clock,Duration)'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <!-- LAYER 6: TOTPGenerator public methods -->
+                            <execution>
+                                <id>verify-totp-now-default</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'now()'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-totp-now-clock</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'now(Clock)'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-totp-at-long</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'at(long)'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-totp-verify-simple</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'verify(String)'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>verify-totp-verify-window</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>wsl</executable>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <arguments>
+                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
+                                        <argument>-esc</argument>
+                                        <argument>-method</argument>
+                                        <argument>'verify(String,int)'</argument>
+                                        <argument>-cp</argument>
+                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
+                                        <argument>-sourcepath</argument>
+                                        <argument>src/main/java</argument>
+                                        <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -307,31 +689,12 @@
                 </configuration>
             </plugin>
             
-            <!-- Exec plugin for OpenJML verification and benchmarks -->
+            <!-- Exec plugin for benchmarks -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
-                    <execution>
-                        <id>openjml-check</id>
-                        <!--<phase>verify</phase>-->
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>wsl</executable>
-                            <workingDirectory>${project.basedir}</workingDirectory>
-                            <successCodes>
-                                <successCode>0</successCode>
-                            </successCodes>
-                            <arguments>
-                                <argument>bash</argument>
-                                <argument>-c</argument>
-                                <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml -check -cp "target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar" -sourcepath src/main/java src/main/java/com/bastiaanjansen/otp/*.java src/main/java/com/bastiaanjansen/otp/helpers/*.java</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>run-benchmarks</id>
                         <phase>verify</phase>

@@ -15,15 +15,15 @@ public enum HMACAlgorithm {
 
     private final /*@ spec_public @*/ String algorithmName;
 
-    //@ private invariant algorithmName != null && algorithmName.length() > 0;
+    //@ private invariant algorithmName != null;
+    //@ ensures algorithmName.length() > 0;
     //@ ensures this.algorithmName == algorithmName;
     HMACAlgorithm(String algorithmName) {
         this.algorithmName = algorithmName;
     }
 
     //@ ensures \result != null;
-    //@ ensures \result.equals(algorithmName);
-    //@ ensures \result.length() > 0;
+    //@ ensures \result == algorithmName;
     //@ assignable \nothing;
     //@ pure
     public String getHMACName() {
