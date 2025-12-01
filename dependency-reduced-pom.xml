@@ -36,13 +36,6 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>org.openjdk.jmh</groupId>
-              <artifactId>jmh-generator-annprocess</artifactId>
-              <version>1.37</version>
-            </path>
-          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>
@@ -60,11 +53,20 @@
               <executable>java</executable>
               <arguments>
                 <argument>-jar</argument>
-                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                <argument>${project.build.directory}/benchmarks.jar</argument>
               </arguments>
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <includeProjectDependencies>true</includeProjectDependencies>
+          <includePluginDependencies>false</includePluginDependencies>
+          <mainClass>org.openjdk.jmh.Main</mainClass>
+          <arguments>
+            <argument>-f</argument>
+            <argument>0</argument>
+          </arguments>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
