@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/maven-3-jdk-25@master
+        uses: snyk/actions/maven-3-jdk-24@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
