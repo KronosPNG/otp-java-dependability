@@ -696,6 +696,11 @@
                     <includeProjectDependencies>true</includeProjectDependencies>
                     <includePluginDependencies>false</includePluginDependencies>
                     <mainClass>org.openjdk.jmh.Main</mainClass>
+                    <!-- Pass JMH args to disable forking when running via exec:java -->
+                    <arguments>
+                        <argument>-f</argument>
+                        <argument>0</argument>
+                    </arguments>
                 </configuration>
             </plugin>
 
