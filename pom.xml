@@ -686,7 +686,7 @@
                             <executable>java</executable>
                             <arguments>
                                 <argument>-jar</argument>
-                                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                                <argument>${project.build.directory}/benchmarks.jar</argument>
                             </arguments>
                         </configuration>
                     </execution>
