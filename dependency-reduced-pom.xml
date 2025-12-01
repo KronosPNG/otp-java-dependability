@@ -36,6 +36,13 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.openjdk.jmh</groupId>
+              <artifactId>jmh-generator-annprocess</artifactId>
+              <version>1.37</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>
@@ -154,14 +161,31 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <finalName>benchmarks</finalName>
               <transformers>
                 <transformer>
                   <mainClass>org.openjdk.jmh.Main</mainClass>
                 </transformer>
+                <transformer />
               </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.10.0.2594</version>
       </plugin>
     </plugins>
   </build>
@@ -284,7 +308,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -306,7 +330,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -328,7 +352,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -350,7 +374,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -372,7 +396,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -394,7 +418,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -416,7 +440,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -438,7 +462,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -460,7 +484,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -482,7 +506,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -504,7 +528,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -526,7 +550,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -548,7 +572,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -570,7 +594,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -592,7 +616,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -614,7 +638,7 @@
                 </goals>
                 <configuration>
                   <executable>wsl</executable>
-                  <workingDirectory>C:\Users\turco\OneDrive\Desktop\Dependability\otp-java-dependability</workingDirectory>
+                  <workingDirectory>${project.basedir}</workingDirectory>
                   <arguments>
                     <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
                     <argument>-esc</argument>
@@ -741,5 +765,9 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
+    <sonar.exclusions>**/benchmarks/**,
+            **/server/**
+            **/resources/**</sonar.exclusions>
+    <sonar.test.exclusions>**/test/**</sonar.test.exclusions>
   </properties>
 </project>
