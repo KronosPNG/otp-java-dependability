@@ -44,7 +44,7 @@ function hexToBytes(hex) {
 // Convert Base32 to byte array
 function base32ToBytes(base32) {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-    base32 = base32.toUpperCase().replace(/=+$/, '');
+    base32 = base32.toUpperCase().replace(/=*$/, '');
     let bits = '';
     
     for (let i = 0; i < base32.length; i++) {
