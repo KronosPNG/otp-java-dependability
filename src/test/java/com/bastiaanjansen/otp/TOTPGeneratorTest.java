@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TOTPGeneratorTest {
 
-    private final static String secret = "vv3kox7uqj4kyakohmzpph3us4cjimh6f3zknb5c2oobq6v2kiyhm27q";
+    private static final String secret = "vv3kox7uqj4kyakohmzpph3us4cjimh6f3zknb5c2oobq6v2kiyhm27q";
 
     private static Stream<Arguments> secondsPast1970TestData() {
         return Stream.of(
