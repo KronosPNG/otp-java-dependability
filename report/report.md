@@ -9,11 +9,25 @@ Questo progetto implementa un generatore di password monouso (OTP) per Java seco
 Il progetto è completamente buildabile sia localmente che in ambiente CI/CD attraverso Maven. Il file pom.xml configura tutte le dipendenze, i plugin e i profili necessari per la compilazione automatizzata.
 
 ### 2.2 Pipeline CI/CD
-È stata implementata una pipeline completa di CI/CD utilizzando GitHub Actions (ci-cd.yml) che include:
+È stata implementata una pipeline completa di CI/CD utilizzando GitHub Actions (`.github/workflows/ci-cd.yml`) che include tre job principali:
+
+#### Job 1: Build and Test
 - **Build automatica** ad ogni push e pull request sui branch `main` e `dependability`
-- **Esecuzione automatica dei test** durante la fase di verifica
-- **Deploy automatico su GitHub Pages** dell'applicazione web e dei report di coverage/mutation testing
+- **Esecuzione automatica** di test unitari, JaCoCo coverage e PITest mutation testing tramite `mvn clean verify`
+- **Upload su Codecov** dei report di coverage
 - **Gestione degli artifact** per i report JaCoCo e PIT
+
+#### Job 2: Deploy
+- **Deploy automatico su GitHub Pages** dell'applicazione web e dei report
+- Deploy organizzato in:
+  - `/app` - Applicazione web OTP
+  - `/coverage` - Report JaCoCo
+  - `/mutation` - Report PITest
+
+#### Job 3: Docker
+- **Build e push automatico** dell'immagine Docker
+- Push su **Docker Hub** e **GitHub Container Registry**
+- Utilizzo di cache per ottimizzare i build successivi
 
 ## 3. Testing
 
@@ -43,7 +57,10 @@ Il progetto utilizza **JaCoCo** (Java Code Coverage) per analizzare la copertura
 - Package `com.bastiaanjansen.otp.helpers`: 90% di copertura delle istruzioni
 
 ### 4.3 Reporting
-I report JaCoCo vengono generati automaticamente in formato HTML e XML (jacoco) e caricati su Codecov tramite la pipeline CI/CD.
+I report JaCoCo vengono generati automaticamente in formato HTML e XML (`target/site/jacoco/jacoco.xml`) durante la fase di test. La pipeline CI/CD:
+- Carica i report su **Codecov** per tracking della copertura nel tempo
+- Salva gli artifact JaCoCo per consultazione
+- Deploya i report su **GitHub Pages** per visualizzazione pubblica
 
 ## 5. Mutation Testing con PIT
 
@@ -58,7 +75,11 @@ I risultati ottenuti mostrano:
 - **Line Coverage per mutation testing: 91%**
 
 ### 5.2 Configurazione
-Il mutation testing è configurato come profilo Maven (`mutation-testing`) e viene eseguito automaticamente durante la fase di verifica nella pipeline CI/CD.
+Il mutation testing viene eseguito automaticamente durante la fase di verifica (`mvn verify`) nella pipeline CI/CD. Il `pom.xml` configura PITest con:
+- **Mutation Threshold**: 70% (soglia minima per mutation coverage)
+- **Coverage Threshold**: 80% (soglia minima per line coverage)
+- **Mutatori**: DEFAULTS (set standard di mutazioni)
+- **Esclusioni**: Benchmark, codice generato JMH, e server code
 
 ## 6. Performance Testing con JMH
 
