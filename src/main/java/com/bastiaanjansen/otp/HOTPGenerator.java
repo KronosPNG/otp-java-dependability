@@ -262,7 +262,7 @@ public final class HOTPGenerator {
         truncatedHash %= Math.pow(10, passwordLength);
 
         // Left pad with 0s for an n-digit code
-        return String.format("%0%dd", passwordLength, truncatedHash);
+        return String.format("%0%d$d", passwordLength, truncatedHash);
     }
 
     public static final class Builder {
