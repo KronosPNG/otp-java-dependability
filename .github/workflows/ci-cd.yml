@@ -68,7 +68,7 @@ jobs:
       run: mvn clean package -DskipTests
     
     - name: Run benchmarks
-      run: mvn exec:java -Dexec.mainClass="org.openjdk.jmh.Main" -Dexec.args="-rf json -rff benchmark-results.json"
+      run: java -jar target/benchmarks.jar -rf json -rff benchmark-results.json
       continue-on-error: true
     
     - name: Upload benchmark results
