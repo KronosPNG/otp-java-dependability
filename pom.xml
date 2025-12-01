@@ -691,6 +691,12 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <!-- Include project dependencies in classpath when using exec:java -->
+                    <includeProjectDependencies>true</includeProjectDependencies>
+                    <includePluginDependencies>false</includePluginDependencies>
+                    <mainClass>org.openjdk.jmh.Main</mainClass>
+                </configuration>
             </plugin>
 
             <plugin>
