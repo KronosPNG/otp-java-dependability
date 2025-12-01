@@ -10,7 +10,6 @@ import io.javalin.http.Context;
 
 import java.net.URI;
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Lightweight REST API server for OTP generation and verification.
