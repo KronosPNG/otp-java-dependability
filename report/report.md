@@ -24,6 +24,7 @@ Il progetto è completamente buildabile sia localmente che in ambiente CI/CD att
   - `/coverage` - Report JaCoCo
   - `/mutation` - Report PITest
 
+
 #### Job 3: Docker
 - **Build e push automatico** dell'immagine Docker
 - Push su **Docker Hub** e **GitHub Container Registry**
@@ -59,8 +60,8 @@ Il progetto utilizza **JaCoCo** (Java Code Coverage) per analizzare la copertura
 ### 4.3 Reporting
 I report JaCoCo vengono generati automaticamente in formato HTML e XML (`target/site/jacoco/jacoco.xml`) durante la fase di test. La pipeline CI/CD:
 - Carica i report su **Codecov** per tracking della copertura nel tempo
-- Salva gli artifact JaCoCo per consultazione
-- Deploya i report su **GitHub Pages** per visualizzazione pubblica
+- Salva gli artifact JaCoCo per consultazione e download
+- Deploya i report su **GitHub Pages** all'indirizzo `/coverage`
 
 ## 5. Mutation Testing con PIT
 
@@ -80,6 +81,11 @@ Il mutation testing viene eseguito automaticamente durante la fase di verifica (
 - **Coverage Threshold**: 80% (soglia minima per line coverage)
 - **Mutatori**: DEFAULTS (set standard di mutazioni)
 - **Esclusioni**: Benchmark, codice generato JMH, e server code
+
+### 5.3 Reporting
+I report PITest vengono generati in `target/pit-reports/` e:
+- Salvati come artifact nella pipeline CI/CD per consultazione e download
+- Deployati su **GitHub Pages** all'indirizzo `/mutation`
 
 ## 6. Performance Testing con JMH
 

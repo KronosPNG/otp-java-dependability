@@ -66,15 +66,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
+    - name: Download JaCoCo report
+      uses: actions/download-artifact@v4
       with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
+        name: jacoco-report
+        path: jacoco-report
+      continue-on-error: true
     
-    - name: Build application
-      run: mvn clean package -DskipTests
+    - name: Download PIT report
+      uses: actions/download-artifact@v4
+      with:
+        name: pit-report
+        path: pit-report
+      continue-on-error: true
     
     - name: Create deployment directory
       run: |
@@ -82,9 +86,9 @@ jobs:
         mkdir -p _site/coverage
         mkdir -p _site/mutation
         cp -r src/main/resources/public/* _site/app/
-        cp -r target/site/jacoco/* _site/coverage/ || true
-        cp -r target/pit-reports/* _site/mutation/ || true
-        echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=app/"></head><body><p>Redirecting to <a href="app/">OTP Generator</a>...</p></body></html>' > _site/index.html
+        cp -r jacoco-report/* _site/coverage/ || true
+        cp -r pit-report/* _site/mutation/ || true
+        echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>OTP Java Dependability</title></head><body style="font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px;"><h1>OTP Java - Dependability Reports</h1><ul style="list-style: none; padding: 0;"><li style="margin: 15px 0;"><a href="app/" style="font-size: 1.2em; color: #0366d6; text-decoration: none;">🔐 OTP Generator Application</a></li><li style="margin: 15px 0;"><a href="coverage/" style="font-size: 1.2em; color: #0366d6; text-decoration: none;">📊 JaCoCo Code Coverage Report</a></li><li style="margin: 15px 0;"><a href="mutation/" style="font-size: 1.2em; color: #0366d6; text-decoration: none;">🧬 PITest Mutation Testing Report</a></li></ul></body></html>' > _site/index.html
     
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
