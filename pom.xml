@@ -42,6 +42,9 @@
             **/server/**
             **/resources/**
         </sonar.exclusions>
+        <sonar.test.exclusions>
+            **/test/**
+        </sonar.test.exclusions>
     </properties>
 
     <scm>
@@ -450,33 +453,6 @@
                                     </arguments>
                                 </configuration>
                             </execution>
-                            
-                            <!-- LAYER 5: TOTPGenerator private helpers -->
-                            <!-- Skipped: validateTime - private helper with class invariant checking issues -->
-                            <!--
-                            <execution>
-                                <id>verify-totp-validateTime</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>wsl</executable>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                    <arguments>
-                                        <argument>/mnt/c/OpenJML/OpenJML/OpenJML21/openjml</argument>
-                                        <argument>-esc</argument>
-                                        <argument>-method</argument>
-                                        <argument>validateTime</argument>
-                                        <argument>-cp</argument>
-                                        <argument>target/classes:/mnt/c/Users/turco/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar</argument>
-                                        <argument>-sourcepath</argument>
-                                        <argument>src/main/java</argument>
-                                        <argument>src/main/java/com/bastiaanjansen/otp/TOTPGenerator.java</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            -->
                             
                             <execution>
                                 <id>verify-totp-calculateCounter-long</id>
